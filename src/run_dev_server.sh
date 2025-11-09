@@ -33,6 +33,4 @@ cd -- "$(dirname -- "$0")" || exit_with_error "Failed to traverse into the scrip
 
 # Run the web app
 #  Prepend "FLASK_ENV=development" to the following line to use development features of the Flask's built-in web server
-FLASK_APP=./selfdroid.py ./virtualenv/bin/python3 -m flask run \
-  --cert './self_signed_certs/certificate.crt' \
-  --key './self_signed_certs/private_key.key'
+FLASK_APP=./selfdroid.py ./virtualenv/bin/python3 -m flask run

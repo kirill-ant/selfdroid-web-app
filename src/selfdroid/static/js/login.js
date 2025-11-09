@@ -47,7 +47,7 @@ function set_up_password_field_hiding_if_needed() {
 }
 
 function show_mobile_app_companion_info() {
-    const api_url = ("https://" + API_HOST + API_PATH);
+    const api_url = ("http://" + API_HOST + API_PATH);
 
     // --- QR code ---
     // QRCode.js documentation: https://github.com/davidshimjs/qrcodejs

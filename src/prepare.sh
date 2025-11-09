@@ -24,30 +24,13 @@
 
 function exit_with_error() {
   echo "ERROR: $1"
-  echo 'Delete the "virtualenv" and "self_signed_certs" directories if they exist any try again!'
+  echo 'Delete the "virtualenv" directory if it exists and try again!'
   exit 1
 }
 
 
 # Traverse to the directory where this script is located
 cd -- "$(dirname -- "$0")" || exit_with_error "Failed to traverse into the script's directory"
-
-# Generate a new self-signed certificate
-if [ ! -d "./self_signed_certs" ]; then
-  mkdir './self_signed_certs' || exit_with_error "Failed to create a new directory for the self-signed certificate"
-  chmod 0700 './self_signed_certs' || exit_with_error "Failed to change the self-signed certificates directory's permissions"
-
-  openssl req \
-    -x509 \
-    -newkey rsa:4096 \
-    -keyout './self_signed_certs/private_key.key' \
-    -out './self_signed_certs/certificate.crt' \
-    -days 1825 \
-    -nodes \
-    -subj '/O=Selfdroid/OU=Self-Signed Certificate - DO NOT TRUST!/CN=localhost' || exit_with_error "Failed to generate a new self-signed certificate"
-
-  chmod 0600 './self_signed_certs/private_key.key' './self_signed_certs/certificate.crt' || exit_with_error "Failed to change the certificate's and private key's permissions"
-fi
 
 # Prepare a virtual environment
 if [ ! -d "./virtualenv" ]; then
