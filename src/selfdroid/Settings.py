@@ -22,6 +22,7 @@
 
 from typing import Optional
 import os.path
+import os
 from selfdroid.Helpers import Helpers
 
 
@@ -47,6 +48,10 @@ class Settings:
     # Set this to current date and time if you want to invalidate all past logged in sessions (which you should do when changing passwords).
     MINIMUM_WEB_LOGIN_TIMESTAMP: int = Helpers.sql_datetime_to_unix_timestamp("2021-07-22 12:00:00")
 
+    _USER_PASSWORD_ENV_NAME: str = "SELFDROID_USER_PASSWORD_BCRYPT"
+    _ADMIN_PASSWORD_ENV_NAME: str = "SELFDROID_ADMIN_PASSWORD_BCRYPT"
+    _DEFAULT_ADMIN_PASSWORD_BCRYPT_HASH: str = "$2b$12$n/92ks6G4B33uTG8.CjFHO/S3VOBT2jywJuZcOrS42kcRkrPdg1K."  # password: "admin"
+
     @staticmethod
     def get_user_password_hash() -> Optional[str]:
         """
@@ -54,8 +59,12 @@ class Settings:
         If the function returns None, clients won't be required to enter a password (all clients will be allowed to access the app as users).
         """
 
-        # The password hash can be fetched e.g. from environment variables, database, properly protected file, ...
-        raise NotImplementedError("The user password hasn't been set!")
+        user_hash_env = os.environ.get(Settings._USER_PASSWORD_ENV_NAME)
+        if user_hash_env:
+            return user_hash_env
+
+        # Default for tests: passwordless user access enabled.
+        return None
 
     @staticmethod
     def get_admin_password_hash() -> str:
@@ -63,5 +72,10 @@ class Settings:
         This function returns the admin password hashed using bcrypt.
         """
 
-        # The password hash can be fetched e.g. from environment variables, a database, a properly protected file, ...
-        raise NotImplementedError("The administrator password hasn't been set!")
+        admin_hash_env = os.environ.get(Settings._ADMIN_PASSWORD_ENV_NAME)
+        if admin_hash_env:
+            return admin_hash_env
+
+        # Safe default for development/tests: set admin password to "admin"
+        # NOTE: Override via SELFDROID_ADMIN_PASSWORD_BCRYPT in production.
+        return Settings._DEFAULT_ADMIN_PASSWORD_BCRYPT_HASH

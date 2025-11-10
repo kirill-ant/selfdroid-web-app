@@ -31,6 +31,11 @@ function exit_with_error() {
 # Traverse to the directory where this script is located
 cd -- "$(dirname -- "$0")" || exit_with_error "Failed to traverse into the script's directory"
 
+# Provide sensible defaults for local development if not supplied
+DEFAULT_ADMIN_PASSWORD_BCRYPT='$2b$12$n/92ks6G4B33uTG8.CjFHO/S3VOBT2jywJuZcOrS42kcRkrPdg1K.'
+: "${SELFDROID_ADMIN_PASSWORD_BCRYPT:=$DEFAULT_ADMIN_PASSWORD_BCRYPT}"
+export SELFDROID_ADMIN_PASSWORD_BCRYPT
+
 # Run the web app
 #  Prepend "FLASK_ENV=development" to the following line to use development features of the Flask's built-in web server
 FLASK_APP=./selfdroid.py ./virtualenv/bin/python3 -m flask run --host 0.0.0.0
